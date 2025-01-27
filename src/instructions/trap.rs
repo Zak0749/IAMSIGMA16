@@ -1,4 +1,5 @@
 use std::io::Read;
+use std::iter;
 
 use crate::{
     machine::{Machine, Register},
@@ -29,12 +30,19 @@ impl Instruction<1> for Trap {
                 let start = data.register(self.r_a).u16() as usize;
                 let length = data.register(self.r_b).u16() as usize;
 
-                let mut input = Vec::with_capacity(length);
-                std::io::stdin().read_exact(&mut input).unwrap();
+                let mut input = String::new();
+                std::io::stdin().read_line(&mut input).unwrap();
 
-                for i in 0..length {
-                    let c = input.get(i).unwrap_or(&0);
-                    data.memory[start + i] = Word(*c as u16);
+                let chars = input.chars().collect::<Vec<char>>();
+
+                for (i, c) in chars
+                    .iter()
+                    .map(|v| *v as u16)
+                    .chain(iter::repeat(0))
+                    .take(length)
+                    .enumerate()
+                {
+                    data.memory[start + i] = Word(c);
                 }
             }
             NON_BLOCKING_WRITE => {

@@ -38,7 +38,6 @@ fn main() {
 
             _ => panic!("Invalid instruction"),
         } {
-            println!("breaking at pc {} {:?}", machine.pc, digits);
             break;
         }
     }

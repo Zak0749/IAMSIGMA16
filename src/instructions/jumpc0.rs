@@ -15,7 +15,7 @@ impl Instruction<2> for JumpC0 {
     fn execute(&mut self, system: &mut Machine) -> Line {
         let address = self.address + system.register(self.offset).u16();
 
-        if system.register(Register::R15).u16() & self.bit << 0 == 0 {
+        if system.register(Register::R15).u16() & self.bit << 1 == 0 {
             return Line::Jump(address);
         }
 
